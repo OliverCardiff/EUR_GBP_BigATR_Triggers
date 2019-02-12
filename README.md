@@ -3,15 +3,24 @@ Development of trading strategy for GBP/USD using partial EUR/USD correlations a
 Strategy development for EUD/USD x GBP/USD 
  
 ## Mission statement 
-The objective of this task is to build models which yield a profitable set of trades for the GBP/USD FX pair, informed by the movements of the EUR/USD pair. The mantra ‘simple models work best’ will be adhered to. The strategy will focus on the detection of larger moves in EUR/USD, and the proportional relationship between the equivalent move in GBP/USD at a simultaneous timestep. Statistical learning models will be used to predict price maxima and minima within a time window t of a trigger x. The ideal model will output a simple estimate of price, with sufficient predictive power to inform a trading strategy with an edge.  
+The objective of this task is to build models which yield a profitable set of trades for the GBP/USD FX pair, informed by the movements of the EUR/USD pair. The mantra ‘simple models work best’ will be adhered to. The strategy will focus on the detection of larger moves in EUR/USD, and the proportional relationship between the equivalent move in GBP/USD at a simultaneous timestep. Statistical learning models will be used to predict price maxima and minima within a time window t of a trigger x. The ideal model will output a simple estimate of price, with sufficient predictive power to inform a trading strategy with an edge. 
+
+## Simulation of Commissions
+Comissions are assumed to be taken from a broker which widens spread (like Oanda), a conservatively high 2-pip commission per trade was deducted from the portfolio.
 
 ## Use of Tech/Data 
 • Language: Python 3.5 
+
 • Scikit-learn, for GridSearchCV and modelling functions 
+
 • TA-lib python wrapper, for the technical indicator functions 
+
 • Bayesian-optimisation library, for optimising black-box functions 
+
 • Pandas and Numpy for data manipulation 
+
 • Matplotlib for graph generation 
+
 • Free FX minute data from 2001-2018 retrieved from: https://forextester.com/data/datasources 
 
 ## Model Use 
@@ -68,7 +77,57 @@ The other application of the Bayesian optimiser was to tune the parameters of th
 Both optimisation loops were performed on the same training data. The test data (60% of the entire time series) was left aside for testing at the end, this is shown in some graphs below. 
 
  ![train_opts](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/trade_opt.png)
+ 
 *This is an outline of the optimisation of the trade system*
 
+## Results
+I spent a huge amount of time just figuring out which bits should or should not be optimised, which parameters to expose at which range etc. There are also a few erroneous bits of the timeseries data near the train/test split. I adjusted the split window a little bit so it would be excluded (otherwise the optimiser would just seek that out and exploit it at all costs).
+ 
+![4hgraph](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/4H_Train_Test.png)
+
+*Result of model building on the 4H timeframe*
+
+Core parameters:
+
+• ATR scaling factor: 0.8 (RF training),0.72 (System optimisation)  
+
+• Qloss: 0.915 
+
+• QProf: 0.93 
+
+• Risk_rate = 1.2 
+
+• Trade_window = 6 (6 * 4H = 24H!) 
+
+This model will trade GBP/USD over the course of up to 24hrs based on the observation of a single 4hr move greater than 80% of the ATR20, in the EUR/USD pair.  
+
+![1dgraph](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/1D_Train_Test.png)
+
+*Result of model building on the 1D timeframe*
+
+Core parameters:
+
+• ATR scaling factor: 0.8 (RF training),0.79 (System optimisation)  
+
+• Qloss: 1.175 
+
+• QProf: 0.946 
+
+• Risk_rate = 1.2 
+
+• Trade_window = 1 (1D = 24H!) 
+
+This model simply trades GBP/USD over a 24hr window based on a large move having occurred on the previous day in EUR/USD. 
+These two models worked well. Many models failed for many reasons, many of which were wonky optimisations. I found that the test models became profitable (& more robust to permutations) almost immediately after I made the decision to optimise less and fix the initial ATR scale at 0.8, fix the Risk-ratio at 1.2, and fix the time window at 24Hr for both. Simpler models work best!  
+
+## Notes 
+
+Optimising the trigger function didn’t really work. The issue was that minimising error by scale always pushed the time window to the minimum value, and ATR scale had minimal effect on it. The value of the scaling factor was best guessed at by hand. 
+Optimising the risk-ratio worked sometimes, but often led to problems. For example, the optimiser would often crank it up until nearly no trades were performed, then tweak the other params until profitable ones started popping above the threshold. Performing 4-5 1-day trades over 10 years didn’t seem like a great idea, so this was scrapped too, 1.2 seems to work okay. 
+One-hour time-frame trading has yet to be attempted (not enough time right now to compute as the opt function takes 4x as long as the 4H).
+
+![1hgraph](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/1H_Train_Test.png)
+
+*This is the best 1-hr system (Scrapped!)*
 
 
