@@ -6,7 +6,7 @@ Strategy development for EUD/USD x GBP/USD
 The objective of this task is to build models which yield a profitable set of trades for the GBP/USD FX pair, informed by the movements of the EUR/USD pair. The mantra ‘simple models work best’ will be adhered to. The strategy will focus on the detection of larger moves in EUR/USD, and the proportional relationship between the equivalent move in GBP/USD at a simultaneous timestep. Statistical learning models will be used to predict price maxima and minima within a time window t of a trigger x. The ideal model will output a simple estimate of price, with sufficient predictive power to inform a trading strategy with an edge. 
 
 ## Simulation of Commissions
-Comissions are assumed to be taken from a broker which widens spread (like Oanda), a conservatively high 2-pip commission per trade was deducted from the portfolio.
+Commissions are assumed to be taken from a broker which widens spread (like Oanda), a conservatively high 2-pip commission per trade was deducted from the portfolio.
 
 ## Use of Tech/Data 
 • Language: Python 3.5 
