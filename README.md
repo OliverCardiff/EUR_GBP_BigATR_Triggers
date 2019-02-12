@@ -48,17 +48,27 @@ Minimum price in time window. Min( lowGBP [ x: t+x ] )
 
  
 ## Modelling outcomes for optimised RFRs
- 
-Optimised hyperparameters for each RFR:
-![Correlation_of_preds](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/Model_features.png)
+
+![hyperparams](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/mini_tab.png)
+*Optimised hyperparameters for each RFR*
+![feature_importance](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/Model_features.png)
 *Feature Importances extracted from CV best estimators*
+
 It is remarkable that the features differ in importance so much by just changing the timeframe. Although the ATR of GBP does seem to be a regular feature. 
 
-Optimisation Loops Two applications of the Bayesian ‘black-box’ function optimisation where attempted.  The first was an optimisation of the trade entry/signal generation function. The parameters were the ATR scaling factor and the time window before stop. The opt function sought out the pair of price prediction models with the minimum combined MSE. The objective of optimising this function was to find a signal set which gave more predictive power to the model building process, and ergo which could be more reliably trained.  
+## Optimisation Loops 
 
- ![Correlation_of_preds](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/Model_features.png)
-This is an outline of the trigger optimisation 
+Two applications of the Bayesian ‘black-box’ function optimisation where attempted.  The first was an optimisation of the trade entry/signal generation function. The parameters were the ATR scaling factor and the time window before stop. The opt function sought out the pair of price prediction models with the minimum combined MSE. The objective of optimising this function was to find a signal set which gave more predictive power to the model building process, and ergo which could be more reliably trained. 
+
+![trigger_loops](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/trigger_opt.png)
+
+*This is an outline of the trigger optimisation*
+
 The other application of the Bayesian optimiser was to tune the parameters of the trading system that used the predictive models. The optimiser sought to maximise returns (naturally) and tuned buy and sell stop adjustments, the risk-ratio, and ATR scaling factor again. In the end the risk-ratio was set at 1.2 and excluded from tuning though. 
 Both optimisation loops were performed on the same training data. The test data (60% of the entire time series) was left aside for testing at the end, this is shown in some graphs below. 
- 
-This is an outline of the optimisation of the trade system 
+
+ ![train_opts](https://github.com/OliverCardiff/EUR_GBP_BigATR_Triggers/blob/master/trade_opt.png)
+*This is an outline of the optimisation of the trade system*
+
+
+
