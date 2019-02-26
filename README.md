@@ -1,6 +1,7 @@
 # EUR_GBP_BigATR_Triggers
 Development of trading strategy for GBP/USD using partial EUR/USD correlations as predictors
-Strategy development for EUD/USD x GBP/USD 
+
+This project eschewed the use of 'backtrader' in this case, as increased efficiency was required for optimisation loops. Instead a smaller custom trade simulator was built to iterate over the an arbitrary timeframe, with all trades simulated on minute-level data.
  
 ## Mission statement 
 The objective of this task is to build models which yield a profitable set of trades for the GBP/USD FX pair, informed by the movements of the EUR/USD pair. The mantra ‘simple models work best’ will be adhered to. The strategy will focus on the detection of larger moves in EUR/USD, and the proportional relationship between the equivalent move in GBP/USD at a simultaneous timestep. Statistical learning models will be used to predict price maxima and minima within a time window t of a trigger x. The ideal model will output a simple estimate of price, with sufficient predictive power to inform a trading strategy with an edge. 
